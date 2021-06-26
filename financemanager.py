@@ -43,7 +43,7 @@ def record():
 def display():
     con = sqlite3.connect('FinanceManager.db')
     cur = con.cursor()
-    cur.execute("SELECT * FROM finances")
+    cur.execute("SELECT *, oid FROM finances")
     financial_records = cur.fetchall()
     print_records = ''
     for record in financial_records:
@@ -51,6 +51,15 @@ def display():
     display_label = tk.Label(window, text=print_records)
     display_label.grid(row=2, column=0, columnspan=1)
 
+# remove function
+def remove():
+    con = sqlite3.connect('FinanceManager.db')
+    cur = con.cursor()
+    cur.execute("DELETE from finances WHERE oid = " + delete_entry.get())
+    delete_entry.delete(0, 50)
+    con.commit()
+    con.close()
+    
 # gui
 window = tk.Tk()
 item_entry = tk.Entry(window, width=20)
@@ -63,6 +72,8 @@ sign_entry = tk.Entry(window, width=10)
 sign_entry.grid(row=1, column=3, padx=20)
 date_entry = tk.Entry(window, width=10)
 date_entry.grid(row=1, column=4, padx=20)
+delete_entry = tk.Entry(window, width=10)
+delete_entry.grid(row=1, column=6, padx=20)
 item_label = tk.Label(window, text='Item')
 item_label.grid(row=0, column=0, padx=20)
 expense_label = tk.Label(window, text='Expense')
@@ -77,4 +88,6 @@ save_button = tk.Button(window, text='Save', command=record)
 save_button.grid(row=0, column=5, padx=20)
 display_button = tk.Button(window, text='Display Expense Records', command=display)
 display_button.grid(row=1, column=5, padx=20)
+delete_button = tk.Button(window, text='Remove Record', command=remove)
+delete_button.grid(row=0, column=6, padx=20)
 window.mainloop()
