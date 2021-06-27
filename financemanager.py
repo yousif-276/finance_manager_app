@@ -7,6 +7,8 @@ Created on Thu Jun 24 12:44:36 2021
 
 import tkinter as tk
 import sqlite3
+from tkinter import ttk
+
 
 #con = sqlite3.connect('FinanceManager.db')
 #cur = con.cursor()
@@ -43,13 +45,13 @@ def record():
 def display():
     con = sqlite3.connect('FinanceManager.db')
     cur = con.cursor()
-    cur.execute("SELECT *, oid FROM finances")
+    cur.execute("SELECT * FROM finances")
     financial_records = cur.fetchall()
-    print_records = ''
     for record in financial_records:
-        print_records += str(record) + '\n'
-    display_label = tk.Label(window, text=print_records)
-    display_label.grid(row=2, column=0, columnspan=1)
+        print(record)
+        tree.insert("", tk.END, values=record)
+    con.commit()
+    con.close() 
 
 # remove function
 def remove():
@@ -86,8 +88,22 @@ date_label = tk.Label(window, text='Date')
 date_label.grid(row=0, column=4, padx=20)
 save_button = tk.Button(window, text='Save', command=record)
 save_button.grid(row=0, column=5, padx=20)
-display_button = tk.Button(window, text='Display Expense Records', command=display)
-display_button.grid(row=1, column=5, padx=20)
 delete_button = tk.Button(window, text='Remove Record', command=remove)
 delete_button.grid(row=0, column=6, padx=20)
+
+tree = ttk.Treeview(window, column=("c1", "c2", "c3", "c4", "c5"), show='headings')
+tree.grid(columnspan=5)
+tree.column("#1", anchor=tk.CENTER)
+tree.heading("#1", text="Item")
+tree.column("#2", anchor=tk.CENTER)
+tree.heading("#2", text="Expense")
+tree.column("#3", anchor=tk.CENTER)
+tree.heading("#3", text="Qty")
+tree.column("#4", anchor=tk.CENTER)
+tree.heading("#4", text="Signed")
+tree.column("#5", anchor=tk.CENTER)
+tree.heading("#5", text="Date")
+display_button = tk.Button(window, text='Display Expense Records', command=display)
+display_button.grid(row=1, column=5, padx=20)
+
 window.mainloop()
